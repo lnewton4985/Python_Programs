@@ -1,0 +1,367 @@
+# Step 1
+import numpy as np
+import pint
+from matplotlib import pyplot as pl
+ur = pint.UnitRegistry()
+#Step 2
+empty_mass = 29500*ur.kg
+payload = 1000*ur.kg
+fuel_mass = 480000*ur.kg
+TSFC = 3.5e-4*ur.s/ur.m
+full_thrust = 7.6e6*ur.N
+gravity = 6.674e-11*(ur.m**3/((ur.kg)*(ur.s**2)))
+earth_mass = 5.98e24*ur.kg
+earth_diameter = 12700000*ur.m
+v_surface = 460*ur.m/ur.s
+# Step 3
+pos = np.array((0.0,earth_diameter.to(ur.m).magnitude/2.0))*ur.m
+vel = np.array((v_surface.to(ur.m/ur.s).magnitude/2.0,0.0))*ur.m/ur.s
+AER E 160 Programming Project Due November 11 at 4pm
+Page 2 of 16
+# Step 4
+T_angle = 60.0*ur.degree
+x_direc = np.cos(np.pi/3)
+y_direc = np.sin(np.pi/3)
+T_direc = np.array((x_direc,y_direc))
+# Step 5
+pl.ion()
+fig = pl.figure()
+pl.axis((-1e6,1e6,6e6,7e6))
+pl.grid(True)
+earth = pl.Circle((0,0),float(earth_diameter/2.0/ur.m),color='g')
+fig.gca().add_artist(earth)
+x=pos[0].magnitude
+y=pos[1].magnitude
+dx=T_direc[0]*500000
+dy=T_direc[1]*500000
+arrowplt=pl.arrow(x,y,dx,dy,width=30000)
+#Step 6
+def event_handler(event):
+ global T_angle
+ if event.key==',': # press comma to rotate left
+ # Rotate left (increase angle)
+ T_angle += 10.0*ur.degree
+ pass
+ elif event.key=='.': # press period to rotate right
+ # Rotate right (decrease angle)
+ T_angle -= 10.0*ur.degree
+AER E 160 Programming Project Due November 11 at 4pm
+Page 3 of 16
+ pass
+ elif hasattr(event,"button") and event.button==1:
+ if event.xdata < 0.0:
+ # Click on left-half of plot to
+ # Rotate left (increase angle)
+ T_angle -= 10.0*ur.degree
+ pass
+ else:
+ # Click on right-half of plot to
+ # Rotate right (decrease angle)
+ T_angle -= 10.0*ur.degree
+ pass
+ pass
+ pass
+fig.canvas.mpl_connect('key_press_event',event_handler)
+fig.canvas.mpl_connect('button_press_event',event_handler)
+# Step 7
+if fuel_mass > 0:
+ dt=1*ur.s
+else:
+ dt=10*ur.s
+# Step 8
+if fuel_mass > 0:
+ pl.axis((-1e6,1e6,6e6,7e6))
+else:
+ pl.axis((-1e7,1e7,-1e7,1e7))
+AER E 160 Programming Project Due November 11 at 4pm
+Page 4 of 16
+# Step 9
+def norm(vec):
+ return np.sqrt(np.sum(vec**2.0))
+r=norm(pos)
+mass_rocket= (payload + empty_mass + fuel_mass)
+F_gravity = ((gravity*earth_mass*mass_rocket)/r**2)
+# Step 10
+direc_gravity = -pos/r
+force_gravity_direc=direc_gravity*F_gravity
+# Step 11
+if fuel_mass > 0:
+ thrust_vector=T_direc*full_thrust
+else:
+ full_thrust = 0.0*ur.N
+ fuel_mass = 0.0*ur.kg
+# Step 12
+if fuel_mass > 0:
+ dmass_fuel= (-TSFC*full_thrust)*dt
+ fuel_mass= fuel_mass + dmass_fuel
+else:
+ fuel_mass =0
+# Step 13
+sum_forces= thrust_vector+force_gravity_direc
+acceleration=(sum_forces/mass_rocket)
+d_velocity=acceleration*dt
+vel=vel+d_velocity
+# Step 14
+AER E 160 Programming Project Due November 11 at 4pm
+Page 5 of 16
+d_position=vel*dt
+pos=pos+d_position
+# Step 15
+t=0.0*ur.s
+while t < 6000*ur.s:
+ if fuel_mass > 0:
+ dt=1*ur.s
+ else:
+ dt=10*ur.s
+ arrowplt.remove()
+ T_angle = 60.0*ur.degree
+ x_direc = np.cos(np.pi/3)
+ y_direc = np.sin(np.pi/3)
+ T_direc = np.array((x_direc,y_direc))
+ if fuel_mass > 0:
+ thrust_vector=full_thrust*T_direc
+ else:
+ thrust_vector = 0*ur.N
+ fuel_mass = 0.0*ur.kg
+ x=pos[0].magnitude
+ y=pos[1].magnitude
+ dx=T_direc[0]*500000
+ dy=T_direc[1]*500000
+ arrowplt=pl.arrow(x,y,dx,dy,width=30000)
+ pl.title("Fuel remaining: %f kg" %(fuel_mass.magnitude))
+ pl.xlabel("Time: %f s" %(t.magnitude))
+ fig.canvas.mpl_connect('key_press_event',event_handler)
+AER E 160 Programming Project Due November 11 at 4pm
+Page 6 of 16
+ fig.canvas.mpl_connect('button_press_event',event_handler)
+ if fuel_mass > 0:
+ pl.axis((-1e6,1e6,6e6,7e6))
+ else:
+ pl.axis((-1e7,1e7,-1e7,1e7))
+ fig.canvas.draw()
+ fig.canvas.flush_events()
+ r=norm(pos)
+ mass_rocket= (payload + empty_mass + fuel_mass)
+ direc_gravity = -pos/r
+ F_gravity = ((gravity*earth_mass*mass_rocket)/r**2)
+ force_gravity_direc=direc_gravity*F_gravity
+ if fuel_mass > 0:
+ dmass_fuel= (-TSFC*full_thrust)*dt
+ fuel_mass= fuel_mass + dmass_fuel
+ else:
+ fuel_mass =0
+ sum_forces= thrust_vector+force_gravity_direc
+ acceleration=(sum_forces/mass_rocket)
+ d_velocity=acceleration*dt
+ vel=vel+d_velocity
+ d_position=vel*dt
+ pos=pos+d_position
+ t=t+dt
+#adding a second rocket launched at a different angle
+# Step 1
+import numpy as np
+import pint
+from matplotlib import pyplot as pl
+ur = pint.UnitRegistry()
+#Step 2
+empty_mass = 29500*ur.kg
+payload = 1000*ur.kg
+fuel_mass = 480000*ur.kg
+TSFC = 3.5e-4*ur.s/ur.m
+full_thrust = 7.6e6*ur.N
+gravity = 6.674e-11*(ur.m**3/((ur.kg)*(ur.s**2)))
+earth_mass = 5.98e24*ur.kg
+earth_diameter = 12700000*ur.m
+earth2_diameter = 12300000*ur.m
+v_surface = 460*ur.m/ur.s
+v2_surface = 320*ur.m/ur.s
+# Step 3
+pos = np.array((0.0,earth_diameter.to(ur.m).magnitude/2.0))*ur.m
+pos2 = np.array((0.0,earth2_diameter.to(ur.m).magnitude/2.0))*ur.m
+vel = np.array((v_surface.to(ur.m/ur.s).magnitude/2.0,0.0))*ur.m/ur.s
+AER E 160 Programming Project Due November 11 at 4pm
+Page 9 of 16
+vel2 = np.array((v2_surface.to(ur.m/ur.s).magnitude/2.0,0.0))*ur.m/ur.s
+# Step 4
+T_angle = 60.0*ur.degree
+x_direc = np.cos(np.pi/3)
+y_direc = np.sin(np.pi/3)
+T_direc = np.array((x_direc,y_direc))
+# Step 4 modification
+T2_angle = 20.0*ur.degree
+x2_direc = np.cos(np.pi/9)
+y2_direc = np.sin(np.pi/9)
+T2_direc = np.array((x2_direc,y2_direc))
+# Step 5
+pl.ion()
+fig = pl.figure()
+pl.axis((-1e6,1e6,6e6,7e6))
+pl.grid(True)
+earth = pl.Circle((0,0),float(earth_diameter/2.0/ur.m),color='g')
+fig.gca().add_artist(earth)
+x=pos[0].magnitude
+y=pos[1].magnitude
+dx=T_direc[0]*500000
+dy=T_direc[1]*500000
+arrowplt=pl.arrow(x,y,dx,dy,width=30000)
+# Step 5 modification
+x2=pos2[0].magnitude
+y2=pos2[1].magnitude
+dx2=T2_direc[0]*500000
+AER E 160 Programming Project Due November 11 at 4pm
+Page 10 of 16
+dy2=T2_direc[1]*500000
+arrowplt2=pl.arrow(x2,y2,dx2,dy2,width=30000)
+#Step 6
+def event_handler(event):
+ global T_angle
+ if event.key==',': # press comma to rotate left
+ # Rotate left (increase angle)
+ T_angle += 10.0*ur.degree
+ pass
+ elif event.key=='.': # press period to rotate right
+ # Rotate right (decrease angle)
+ T_angle -= 10.0*ur.degree
+ pass
+ elif hasattr(event,"button") and event.button==1:
+ if event.xdata < 0.0:
+ # Click on left-half of plot to
+ # Rotate left (increase angle)
+ T_angle -= 10.0*ur.degree
+ pass
+ else:
+ # Click on right-half of plot to
+ # Rotate right (decrease angle)
+ T_angle -= 10.0*ur.degree
+ pass
+ pass
+ pass
+AER E 160 Programming Project Due November 11 at 4pm
+Page 11 of 16
+fig.canvas.mpl_connect('key_press_event',event_handler)
+fig.canvas.mpl_connect('button_press_event',event_handler)
+# Step 7
+if fuel_mass > 0:
+ dt=1*ur.s
+else:
+ dt=10*ur.s
+# Step 8
+if fuel_mass > 0:
+ pl.axis((-1e6,1e6,6e6,7e6))
+else:
+ pl.axis((-1e7,1e7,-1e7,1e7))
+# Step 9
+def norm(vec):
+ return np.sqrt(np.sum(vec**2.0))
+r=norm(pos)
+r2=norm(pos2)
+mass_rocket= (payload + empty_mass + fuel_mass)
+F_gravity = ((gravity*earth_mass*mass_rocket)/r**2)
+F2_gravity = ((gravity*earth_mass*mass_rocket)/r2**2)
+# Step 10
+direc_gravity = -pos/r
+direc2_gravity = -pos2/r2
+force_gravity_direc = direc_gravity*F_gravity
+force2_gravity_direc = direc2_gravity*F2_gravity
+# Step 11
+if fuel_mass > 0:
+AER E 160 Programming Project Due November 11 at 4pm
+Page 12 of 16
+ thrust_vector=T_direc*full_thrust
+else:
+ full_thrust = 0.0*ur.N
+ fuel_mass = 0.0*ur.kg
+# Step 12
+if fuel_mass > 0:
+ dmass_fuel= (-TSFC*full_thrust)*dt
+ fuel_mass= fuel_mass + dmass_fuel
+else:
+ fuel_mass =0
+# Step 13
+sum_forces= thrust_vector+force_gravity_direc
+sum2_forces = thrust_vector+force2_gravity_direc
+acceleration=(sum_forces/mass_rocket)
+acceleration2=(sum2_forces/mass_rocket)
+d_velocity=acceleration*dt
+d2_velocity=acceleration2*dt
+vel=vel+d_velocity
+vel2=vel2+d2_velocity
+# Step 14
+d_position=vel*dt
+d2_position=vel2*dt
+pos=pos+d_position
+pos2=pos2+d2_position
+# Step 15
+t=0.0*ur.s
+while t < 6000*ur.s:
+AER E 160 Programming Project Due November 11 at 4pm
+Page 13 of 16
+ if fuel_mass > 0:
+ dt=1*ur.s
+ else:
+ dt=10*ur.s
+ arrowplt.remove()
+ arrowplt2.remove()
+ T_angle = 60.0*ur.degree
+ x_direc = np.cos(np.pi/3)
+ y_direc = np.sin(np.pi/3)
+ T_direc = np.array((x_direc,y_direc))
+ T2_angle = 20.0*ur.degree
+ x2_direc = np.cos(np.pi/9)
+ y2_direc = np.sin(np.pi/9)
+ T2_direc = np.array((x2_direc,y2_direc))
+ if fuel_mass > 0:
+ thrust_vector=full_thrust*T_direc
+ else:
+ thrust_vector = 0*ur.N
+ fuel_mass = 0.0*ur.kg
+ x=pos[0].magnitude
+ y=pos[1].magnitude
+ dx=T_direc[0]*500000
+ dy=T_direc[1]*500000
+ arrowplt=pl.arrow(x,y,dx,dy,width=30000)
+ x2=pos2[0].magnitude
+ y2=pos2[1].magnitude
+ dx2=T2_direc[0]*500000
+AER E 160 Programming Project Due November 11 at 4pm
+Page 14 of 16
+ dy2=T2_direc[1]*500000
+ arrowplt2=pl.arrow(x2,y2,dx2,dy2,width=30000)
+ pl.title("Fuel remaining: %f kg" %(fuel_mass.magnitude))
+ pl.xlabel("Time: %f s" %(t.magnitude))
+ fig.canvas.mpl_connect('key_press_event',event_handler)
+ if fuel_mass > 0:
+ pl.axis((-1e6,1e6,6e6,7e6))
+ else:
+ pl.axis((-1e7,1e7,-1e7,1e7))
+ fig.canvas.draw()
+ fig.canvas.flush_events()
+ r=norm(pos)
+ r2=norm(pos2)
+ mass_rocket= (payload + empty_mass + fuel_mass)
+ direc_gravity = -pos/r
+ direc2_gravity = -pos2/r2
+ F_gravity = ((gravity*earth_mass*mass_rocket)/r**2)
+ F2_gravity = ((gravity*earth_mass*mass_rocket)/r2**2)
+ force_gravity_direc=direc_gravity*F_gravity
+ force2_gravity_direc = direc2_gravity*F2_gravity
+ if fuel_mass > 0:
+ dmass_fuel= (-TSFC*full_thrust)*dt
+ fuel_mass= fuel_mass + dmass_fuel
+ else:
+ fuel_mass =0
+ sum_forces= thrust_vector+force_gravity_direc
+ sum2_forces = thrust_vector+force2_gravity_direc
+AER E 160 Programming Project Due November 11 at 4pm
+Page 15 of 16
+ acceleration=(sum_forces/mass_rocket)
+ acceleration2=(sum2_forces/mass_rocket)
+ d_velocity=acceleration*dt
+ d2_velocity=acceleration2*dt
+ vel=vel+d_velocity
+ vel2=vel2+d2_velocity
+ d_position=vel*dt
+ d2_position=vel2*dt
+ pos=pos+d_position
+ pos2=pos2+d2_position
+ t=t+dt
