@@ -1,0 +1,32 @@
+#game of rock paper scissors
+import random # now you can access "random" library
+my_game = random.choice (["computer chooses rock", "computer chooses paper", "computer 
+chooses scissors"])
+print("Would you like to play rock, paper, scissors?")
+answer=input()
+while answer ==("yes"):
+ print("Let's play rock, paper, scissors! \nType your choice")
+ player_choice=input()
+ computer_choice=my_game
+ print(computer_choice)
+ if player_choice==("rock") and computer_choice==("computer chooses scissors"):
+ print("You win!")
+ elif player_choice==("rock") and computer_choice==("computer chooses paper"):
+ print("You lose.")
+ elif player_choice==("rock") and computer_choice==("computer chooses rock"):
+ print("It's a tie, please try again")
+ elif player_choice==("scissors") and computer_choice==("computer chooses rock"):
+ print("You lose.")
+ elif player_choice==("scissors") and computer_choice==("computer chooses paper"):
+ print("You win!")
+ elif player_choice==("scissors") and computer_choice==("computer chooses scissors"):
+ print("It's a tie, please try again")
+ elif player_choice==("paper") and computer_choice==("computer chooses rock"):
+ print("You win!")
+ elif player_choice==("paper") and computer_choice==("computer chooses scissors"):
+ print("You lose.")
+ elif player_choice==("paper") and computer_choice==("computer chooses paper"):
+ print("It's a tie, please try again")
+ print("Would you like to play again?")
+ answer=input()
+ answer==("yes")
