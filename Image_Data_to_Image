@@ -1,0 +1,34 @@
+import astropy.io.fits as fits
+from astropy.nddata import Cutout2D
+from astropy import wcs
+import astropy.units as u
+from astropy.coordinates import SkyCoord
+from photutils.aperture import SkyCircularAperture
+from matplotlib import pyplot as plt
+import numpy as np
+#import astroalign
+
+file = 'hst_13799_02_wfc3_uvis_f350lp_ico002_drz.fits'
+hdulist = fits.open(file)
+image= hdulist[1]
+header=image.header
+data=image.data
+
+w=wcs.WCS(header)
+
+pos = SkyCoord('12h27m12.83s','+09d25m13.19s', frame='icrs')
+
+aperture = SkyCircularAperture(pos, 0.5*u.arcsec)
+
+pixaperture = aperture.to_pixel(w)
+
+cutout = Cutout2D(data,pos,(65,65), wcs=w)
+
+fig = plt.figure
+
+#fig.add_subplot(111,projection=w)
+
+plt.imshow(np.log10(cutout.data), cmap='viridis', vmin = -0.25, vmax = -0.05, origin = 'lower')
+plt.xlabel('Pixels')
+plt.ylabel('Pixels')
+plt.show()
