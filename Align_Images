@@ -1,0 +1,137 @@
+import glob
+import os
+import shutil
+
+from astropy.io import ascii
+from astropy.io import fits
+from astropy.table import Table
+from astropy.visualization import ZScaleInterval
+from astroquery.mast import Observations
+from drizzlepac import tweakreg
+from drizzlepac import astrodrizzle
+from IPython.display import Image
+import matplotlib.pyplot as plt
+
+#matplotlib inline
+
+obsTable = Observations.query_criteria(obstype='all', obs_collection='HST', obs_id=['hst_13799_03_wfc3_uvis_f350lp_ico003_drz', 'hst_13799_02_wfc3_uvis_f350lp_ico002_drz'])
+
+products = Observations.get_product_list(obsTable)
+Observations.download_products(products,download_dir='', mrp_only=False, productSubGroupDescription='FLC')
+
+input_flcs = glob.glob(os.path.join('mastDownload', 'HST', '*', '*flc.fits'))
+print(input_flcs)
+for flc in input_flcs:
+    shutil.copy(flc, os.path.basename(flc))
+shutil.rmtree('mastDownload') #remove mast download dir now that we've moved the files
+
+
+for f in glob.glob('*flc.fits'):
+    print('filename:', fits.getval(f, 'rootname'), 'PA_V3:', fits.getval(f, 'PA_V3'))
+    
+tweakreg.TweakReg(input_flcs)
+running tweakreg with some parameters changed from their defaults.
+tweakreg.TweakReg(input_flcs,
+                    interactive=True,
+                    shiftfile=True, 
+                    outshifts='shift_default.txt',              
+                    updatehdr=True)
+
+tweakreg.TweakReg(input_flcs, 
+                    threshold=4000, 
+                    peakmax=70000,
+                    configobj = None, 
+                    interactive=False,
+                    shiftfile=True,
+                    outshifts='shift_thresh.txt',              
+                    updatehdr=False)
+
+shift_tab = Table.read('shift_thresh.txt',
+                       format='ascii.no_header',
+                       names=['file','dx','dy','rot','scale','xrms','yrms'])
+
+formats = ['.2f', '.2f', '.3f', '.5f', '.2f', '.2f']
+for i, col in enumerate(shift_tab.colnames[1:]):
+    shift_tab[col].format = formats[i]
+shift_tab
+
+Image(filename='residuals_hst_13799_03_wfc3_uvis_f350lp_ico003_drz.png', width=500, height=600)
+Image(filename='vector_hst_13799_02_wfc3_uvis_f350lp_ico002_drz.png', width=500, height=600) 
+
+tweakreg.TweakReg(input_flcs, 
+    threshold=4000, 
+    searchrad=4.0,
+    peakmax=70000,
+    fitgeometry='general',
+    configobj = None, 
+    interactive=False,
+    shiftfile=True, 
+    outshifts='shift_general.txt',              
+    updatehdr=False)
+
+shift_tab=Table.read('shift_general.txt',
+                     format='ascii.no_header',
+                     names=['file','dx','dy','rot','scale','xrms','yrms'])
+
+formats = ['.2f', '.2f', '.3f', '.5f', '.2f', '.2f']
+for i, col in enumerate(shift_tab.colnames[1:]):
+    shift_tab[col].format = formats[i]
+shift_tab
+
+os.rename('residuals_hst_13799_03_wfc3_uvis_f350lp_ico003_drz_flc.png', 'residuals_hst_13799_03_wfc3_uvis_f350lp_ico003_drz_flc_general.png')
+Image(filename='residuals_hst_13799_03_wfc3_uvis_f350lp_ico003_drz_flc_general.png', width=500, height=600)
+os.rename('vector_hst_13799_03_wfc3_uvis_f350lp_ico003_drz_flc.png', 'vector_hst_13799_03_wfc3_uvis_f350lp_ico003_drz_flc_general.png')
+Image(filename='vector_hst_13799_03_wfc3_uvis_f350lp_ico003_drz_flc_general.png', width=500, height=600) 
+
+
+os.rename('residuals_hst_13799_02_wfc3_uvis_f350lp_ico002_drz_flc.png', 'residuals_hst_13799_02_wfc3_uvis_f350lp_ico002_drz_flc_general.png')
+Image(filename='residuals_hst_13799_02_wfc3_uvis_f350lp_ico002_drz_flc_general.png', width=500, height=600)
+os.rename('vector_hst_13799_02_wfc3_uvis_f350lp_ico002_drz_flc.png', 'vector_hst_13799_02_wfc3_uvis_f350lp_ico002_drz_flc_general.png')
+Image(filename='vector_hst_13799_02_wfc3_uvis_f350lp_ico002_drz_flc_general.png', width=500, height=600) 
+
+tweakreg.TweakReg(input_flcs, 
+    threshold=4000, 
+    peakmax=70000,
+    fitgeometry='general',
+    configobj = None, 
+    interactive=False,
+    shiftfile=False, 
+    updatehdr=True)
+
+plt.figure(figsize = (20, 10))
+chip1_data = fits.open('hst_13799_03_wfc3_uvis_f350lp_ico003_drz_flc.fits')['SCI', 1].data
+zscale = ZScaleInterval()
+z1, z2 = zscale.get_limits(chip1_data)
+plt.imshow(chip1_data, cmap='Greys',origin='lower', vmin=z1, vmax=z2)
+
+match_tab = ascii.read('hst_13799_03_wfc3_uvis_f350lp_ico003_drz_flc_catalog_fit.match')            #load match file in astropy table
+match_tab_chip2 = match_tab[match_tab['col15'] == 1]                 #filter table for sources on chip 2 (on ext 1)
+x_cord, y_cord = match_tab_chip2['col11'], match_tab_chip2['col12']
+
+plt.scatter(x_cord, y_cord, s=30, edgecolor='r', facecolor='None',label='Matched Sources, Chip 2')
+plt.ylim(0,2051)
+plt.xlim(0,4096)
+plt.legend(loc='best', fontsize=20)
+
+astrodrizzle.AstroDrizzle(input_flcs,
+    output='f350lp_combined',
+    preserve=False,
+    driz_sep_bits='64,16',
+    driz_cr_corr=True,
+    final_bits='64,16',
+    clean=False,
+    configobj=None,
+    build=True)
+
+plt.figure(figsize = (10, 10))
+drc_dat = fits.open('f350lp_combined_drc.fits')['SCI', 1].data
+z1, z2 = zscale.get_limits(drc_dat)
+plt.imshow(drc_dat, origin='lower', vmin=z1, vmax=z2, cmap='Greys')
+plt.title('F350lp drizzled image', fontsize=30)
+
+
+plt.figure(figsize = (10, 10))
+drc_dat = fits.open('f350lp_combined_drc.fits')['WHT', 1].data 
+z1, z2 = zscale.get_limits(drc_dat)
+plt.imshow(drc_dat, origin='lower', vmin=z1, vmax=z2, cmap='Greys')
+plt.title('F350lp weight image', fontsize=30)
