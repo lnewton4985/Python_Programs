@@ -1,0 +1,340 @@
+@author: lnewt
+"""
+
+#creating equations to calculate coefficient of drag
+#known information
+import pint
+import math
+UR=pint.UnitRegistry()
+V=67.056*(UR.meters/UR.second)
+mass=2585.47*(UR.kg)
+h=304.8*(UR.m) #elevation
+t_c=0.17 #percent thickness
+x_c=0.21 #max thickness
+root_chord_length = 2.1336*(UR.meters)
+tip_chord_length = 1.2192*(UR.meters)
+lfuse_top= 12.192*(UR.meters) #length of fuselage
+wfuse_top=1.6764*(UR.meters)
+lfuse_side=12.192*(UR.meters)
+hfuse_side=1.6764*(UR.meters)
+ltail=6.096*(UR.meters)
+alpha=0.1218*(UR.radians)
+Qwing = 1.0
+e=0.8723 #span efficiency factor
+e0=0.6829 #Oswald efficiency factor
+#previously calculated values, can be found in our Project Part A presentation
+S=28.10317*(UR.meter**2) #planform area of wing
+b=16.764*(UR.meters) #wingspan
+c=1.6764*(UR.meters) #average chord length
+M=0.197 #Mach number
+Re=7456519 #Reynold's number
+a0=0.1151*(UR.radians)#from XFLR5 plot
+CD0_xflr5=0.0071 #cd0 from XFLR5 plot
+p=1.188 *(UR.kg/UR.meter**3) #density
+mu=1.79*10**-5*((UR.N*UR.sec)/UR.meter**2) 
+AR=(b**2/S) #Aspect Ratio
+A_top= (lfuse_top*wfuse_top)+(0.5*wfuse_top*ltail)
+A_side= (lfuse_side*hfuse_side)+(0.5*hfuse_side*ltail)
+Swet_fuse=3.4*((A_top+A_side)/2)
+
+#Project Part B
+#calculating the drag coefficient for the wing
+
+cfwing= 0.455/(((math.log10(Re))**2.58)*(1+(0.144*M**2))**0.65)
+FFwing= (1 + ((0.6/x_c)*t_c) + (100*(t_c**4)))*(1.34*(M**0.18)*((math.cos(alpha))**0.28))
+Swing_exposed = (S - (wfuse_top*root_chord_length))
+Swet_wing = Swing_exposed*(1.977 + 0.52*(t_c))
+Swing_ratio = (Swet_wing/S)
+CD0_wing = cfwing*FFwing*Qwing*Swing_ratio
+print (CD0_wing)
+
+#Project Part C
+
+#calculating the drag coefficient for the fuselage
+
+Ratio_fuse = lfuse_top/c
+Re_fuse=Ratio_fuse*(Re)
+cf_fuse= 0.455/(((math.log10(Re_fuse))**2.58)*(1+(0.144*M**2))**0.65)
+A_max=math.pi*(0.8382**2)*(UR.meter**2) #max area of cross section of fuselage with radius 0.8382 meters
+f_fuse=lfuse_top/((4/math.pi)*A_max)**0.5
+FF_fuse=0.9+(5/(f_fuse**1.5))+(f_fuse/400)
+Sfuse_ratio=Swet_fuse/S
+CD0_fuse=cf_fuse*FF_fuse*Sfuse_ratio*Qwing
+print(CD0_fuse)
+
+#calculating the drag coefficient for the horizontal tail
+
+htail_S=7.02346982*(UR.meters**2)
+t_c_htail=0.12 #percent thickeness based on a NACA 0012
+x_c_htail=0.3 #average max thickness for a low speed airfoil
+Q_htail=1.05 #for conventional tail
+a_sweep_htail=0.20856685*(UR.radians)
+avg_chord_htail=1.0668*(UR.meters)
+FF_htail=(1 + ((0.6/x_c_htail)*t_c_htail) + (100*(t_c_htail**4)))*(1.34*(M**0.18)*((math.cos(a_sweep_htail))**0.28))
+Re_htail=(p*V*avg_chord_htail)/mu
+Swet_htail=2.003*htail_S
+S_htail_ratio=Swet_htail/S
+cf_htail=0.455/(((math.log10(Re_htail))**2.58)*(1+(0.144*M**2))**0.65)
+CD0_htail=FF_htail*S_htail_ratio*Q_htail*cf_htail
+print(CD0_htail)
+
+#calculating the drag coefficient of the vertical tail
+
+vtail_S=2.973*(UR.meters**2)#based on chord lengths
+t_c_vtail=0.12 #percent thickeness based on a NACA 0012
+x_c_vtail=0.3 #average max thickness for a low speed airfoil
+Q_vtail=1.05 #for conventional tail
+a_sweep_vtail=0.24504423*(UR.radians)
+avg_chord_vtail=1.2192*(UR.meters)
+FF_vtail=(1 + ((0.6/x_c_vtail)*t_c_vtail) + (100*(t_c_vtail**4)))*(1.34*(M**0.18)*((math.cos(a_sweep_vtail))**0.28))
+Re_vtail=(p*V*avg_chord_vtail)/mu
+Swet_vtail=2.003*vtail_S
+S_vtail_ratio=Swet_vtail/S
+cf_vtail=0.455/(((math.log10(Re_vtail))**2.58)*(1+(0.144*M**2))**0.65)
+CD0_vtail=FF_vtail*S_vtail_ratio*Q_vtail*cf_vtail
+print(CD0_vtail)
+
+#calculating the drag coefficient for the side vertical stabilizers, pointing up
+
+v_stable_up_S=0.37161216*(UR.meter**2)# planform area of the upper stabilizers
+t_c_vstable_up= 0.12 #still a NACA 0012
+x_c_vstable_up = 0.3 #same airfoil for tail
+Q_vstable_up = 1.5 #for conventional tail
+avg_chord_vstable_up=0.2286*(UR.meter)
+a_sweep_vstable_up=0.24504423*(UR.radians)
+FF_vstable_up=(1 + ((0.6/x_c_vstable_up)*t_c_vstable_up) + (100*(t_c_vstable_up**4)))*(1.34*(M**0.18)*((math.cos(a_sweep_vstable_up))**0.28))
+Re_vstable_up=(p*V*avg_chord_vstable_up)/mu
+Swet_vstable_up=2.003*v_stable_up_S
+S_vstable_up_ratio=Swet_vstable_up/S
+cf_vstable_up=0.455/(((math.log10(Re_vstable_up))**2.58)*(1+(0.144*M**2))**0.65)
+CD0_vstable_up=FF_vstable_up*S_vstable_up_ratio*Q_vstable_up*cf_vstable_up
+print(CD0_vstable_up)
+
+#calculating the drag coefficient for the side vertical stabilizers, pointing down
+
+v_stable_down_S=0.13935456*(UR.meters**2)#planform area of lower stabilizers
+t_c_vstable_down= 0.12 #still a NACA 0012
+x_c_vstable_down = 0.3 #same airfoil for tail
+Q_vstable_down = 1.5 #for conventional tail
+avg_chord_vstable_down=0.4572*(UR.meter)
+a_sweep_vstable_down=0.78539816*(UR.radians)
+FF_vstable_down=(1 + ((0.6/x_c_vstable_down)*t_c_vstable_down) + (100*(t_c_vstable_down**4)))*(1.34*(M**0.18)*((math.cos(a_sweep_vstable_down))**0.28))
+Re_vstable_down=(p*V*avg_chord_vstable_down)/mu
+Swet_vstable_down=2.003*v_stable_down_S
+S_vstable_down_ratio=Swet_vstable_down/S
+cf_vstable_down=0.455/(((math.log10(Re_vstable_down))**2.58)*(1+(0.144*M**2))**0.65)
+CD0_vstable_down=FF_vstable_down*S_vstable_down_ratio*Q_vstable_down*cf_vstable_down
+print(CD0_vstable_down)
+
+#Total drag coefficient for the aircraft so far:
+CD0_total=CD0_wing+CD0_fuse+CD0_htail+CD0_vtail+CD0_vstable_up+CD0_vstable_down
+print(CD0_total)
+
+#Project Part D
+
+#calculating drag coefficient of the floats
+Qfloat=1.0
+l_float = 2.7758*(UR.meters) #got this based off proportions of our cad model
+w_float = 1.07*(UR.meters) #based on Cessna 208 float dimensions
+h_float = 0.99*(UR.meters)
+l_tail_float_front = 1.851*(UR.meters)#using our cad model, the tapered section length of our float is 2/3 times less the length of the float's rectangular length, in the front
+l_tail_float_back = 4.1637*(UR.meters) #using our cad model, the tapered section length of our float is 1.5 times greater the length of the float's rectangular length, in the back
+A_top_float= (l_float*w_float)+(0.5*w_float*l_tail_float_front)+(0.5*w_float*l_tail_float_back)
+A_side_float= (l_float*h_float)+(0.5*h_float*l_tail_float_front)+(0.5*h_float*l_tail_float_back)
+Swet_float = 3.4*((A_top_float+A_side_float)/2)
+Ratio_float = l_float/c
+Re_float=Ratio_float*(Re)
+cf_float= 0.455/(((math.log10(Re_float))**2.58)*(1+(0.144*M**2))**0.65)
+A_max_float=math.pi*(0.20955**2)*(UR.meter**2) #max area of cross section of a float with radius 0.20955 meters, which is 25% of the fueslage radius
+f_float=l_float/((4/math.pi)*A_max_float)**0.5
+FF_float=0.9+(5/(f_float**1.5))+(f_float/400)
+Sfloat_ratio=Swet_float/S
+CD0_float= 2*(cf_float*FF_float*Sfloat_ratio*Qfloat) # for two floats
+print(CD0_float)
+
+#calculating coefficient of drag for streamlined struts (1 set of 8, 2 sets of 2)
+CDc = 0.05 #from handout
+Qstrut=1.5 #from handout
+
+#struts that connect float to float (2)
+l_strut1 = 2.432*(UR.meters)
+h_strut1 = 0.127*(UR.meters)
+S_strut1 = l_strut1*h_strut1
+S_strut1_ratio = S_strut1/S
+CD0_strut1 = 2*(CDc*S_strut1_ratio*Qstrut)
+print(CD0_strut1)
+
+#struts from fuselage to wing (2)
+l_strut2 = 3.3528*(UR.meters)
+h_strut2 = 0.1016*(UR.meters)
+S_strut2 = l_strut2*h_strut2
+S_strut2_ratio = S_strut2/S
+CD0_strut2 = 2*(CDc*S_strut2_ratio*Qstrut)
+print(CD0_strut2)
+
+#struts from fuselage to float (8)
+l_strut3 = 1.354*(UR.meters)
+h_strut3 = 0.0762*(UR.meters)
+S_strut3 = l_strut3*h_strut3
+S_strut3_ratio = S_strut3/S
+CD0_strut3 = 8*(CDc*S_strut3_ratio*Qstrut)
+print(CD0_strut3)
+
+CD0_total2 = CD0_total + CD0_float + CD0_strut1 + CD0_strut2 + CD0_strut3
+print(CD0_total2)
+
+#Project Part E
+
+#How we found BSFC (C) is in report
+#known values
+K=0.04660999587077749
+npr=0.9 
+C=1.06275e-6*(UR.meters**-1)
+W0=42261.48*(UR.kg)*(UR.meters/UR.seconds**2)
+W1=25358.85*(UR.kg)*(UR.meters/UR.seconds**2)
+
+#finding CL/CD
+CL_CD_max = (1/(4*K*(CD0_total2)))**0.5
+print(CL_CD_max)
+
+#finding max range of aircraft
+range= (npr/C)*(CL_CD_max)*(math.log(W0/W1))
+print(range)
+
+#finding the velocity to achieve this range
+V_range = ((2/p)*(W0/S)*(K/CD0_total2)**0.5)**0.5
+print (V_range)
+
+#fuel consumption based on range
+d=241400*(UR.meters) # mission distance
+W_1 = W0*(1/(math.exp(d*(C/npr)*(1/CL_CD_max))))
+print(W_1)
+#finding maximum endurance of the aircraft
+CL_3_2_CD = 1/4*(3/(K*(CD0_total2)**(1/3)))**(3/4)
+endurance = ((((npr*(2*p*S)**0.5)/C)*(CL_3_2_CD)*((1/(W1)**0.5)-(1/(W0)**0.5))))
+print(endurance)
+
+#finding velocity based on endurance
+V_endurance=((2/p)*(W0/S)*(K/(3*CD0_total2))**0.5)**0.5
+print(V_endurance)
+
+#finding the stall velocity
+CL_max= 1.5067 # from project part D
+V_stall= ((2/p)*(W0/S)*(1/CL_max))**0.5
+print(V_stall)
+
+#Project Part F
+
+#finding the power available
+Pes=540632*UR.kg*UR.m**2/UR.s**3 #found this information online for the Cessna 208 Caravan
+PA0=npr*Pes
+print(PA0)
+p_sea_level = 1.225*UR.kg/UR.m**3
+PA=PA0*((p/p_sea_level)**0.7)
+print(PA)
+#finding power required
+PR = (1/2*(p)*(V**3)*S*(CD0_total2))+((2*K*(W0**2))/(p*V*S))
+print(PR)
+Excess_Power = PA-PR
+print(Excess_Power)
+#finding rate of climb
+ROC=(PA-PR)/W0
+print(ROC)
+#finding maximum rate of climb
+ROC_max= ((npr*Pes)/W0)-(((2/p)*((K/(3*CD0_total2))**0.5)*(W0/S))**0.5)*(1.155/CL_CD_max)
+print(ROC_max)
+
+#Project Part G
+
+n_struct_high = 2.5 # found this data online using data from the Cessna 208
+n_struct_low = -1
+n_aero = (0.5*p*(V**2)*S*CL_max)/W0
+print(n_aero)
+#pull up maneuver
+g=9.81*UR.m/UR.s**2
+R_struct_pull = V**2/(g*(n_struct_high -1))
+print(R_struct_pull)
+R_aero_pull = V**2/(g*(n_aero -1))
+print(R_aero_pull)
+#level turn maneuver
+R_struct_turn = V**2/(g*(((n_struct_high)**2)-1)**0.5)
+print(R_struct_turn)
+R_aero_turn=V**2/(g*(((n_aero)**2)-1)**0.5)
+print(R_aero_turn)
+V_star = ((2*n_struct_high*W0)/(p*CL_max*S))**0.5
+print(V_star)
+
+#Project Part H
+#calculating takeoff and landing distances
+
+#takeoff
+h=9.144*UR.meters # obstacle height, an island, for example
+n_lift=1.15 #recommended load factor
+theta=4*UR.degrees
+CL_rolling=0.452 #estimated using known info that CL rolling is 30% of the maximum CL
+mu_rolling=0.165 #found by setting sg eqn to 714m, as found online for Cessna 208, and solving for mu
+VLO=1.2*V_stall
+V_takeoff=0.7*VLO
+L_take=0.5*p*((0.7*VLO)**2)*S*CL_rolling
+print(L_take)
+D_take=0.5*p*((0.7*VLO)**2)*S*(CD0_total2+(K*CL_rolling))
+print(D_take)
+T=PA/V_takeoff
+print(T)
+sg_take=(1.44*(W0)**2)/(g*p*S*CL_max*(T-D_take-(mu_rolling*(W0-L_take))))
+print(sg_take)
+R_take=((VLO)**2)/(g*(n_lift-1))
+s_tr=R_take*math.sin(theta)
+print(s_tr)
+htr=R_take-R_take*math.cos(theta)
+ha_take=h-htr
+sa_take=ha_take/math.tan(theta)
+print(sa_take)
+s_takeoff=sg_take+s_tr+sa_take
+print(s_takeoff)
+
+
+#landing
+n_flare=1.15
+V_flare=1.3*V_stall #VTD
+theta_2=3*UR.degrees
+mu_brake=0.165 #same as takeoff
+R_land=((V_flare)**2)/(g*(n_flare-1))
+hf=R_land-R_land*math.cos(theta_2)
+ha_land=h-hf
+sa_land=ha_land/math.tan(theta_2)
+print(sa_land)
+sf=R_land*math.sin(theta_2)
+print(sf)
+L_land=0.5*p*((0.7*V_flare)**2)*S*CL_rolling
+print(L_land)
+D_land=0.5*p*((0.7*V_flare)**2)*S*(CD0_total2+(K*CL_rolling))
+print(D_land)
+sg_land=(1.69*(W0)**2)/(g*p*S*CL_max*(D_land + (mu_rolling*(W0-L_land))))
+print(sg_land)
+s_landing=sa_land+sf+sg_land
+print(s_landing)
+
+#MATLAB script
+import pint
+import math
+
+UR = pint.UnitRegistry()
+AR = 10
+alpha = 6.98*(UR.radians)
+a0 = 0.1151
+
+oswald_efficiency_0 = (1.78*(1-(0.045*(AR**0.68)))-0.64)
+oswald_efficiency_30 = (4.61*(1-(0.045*(AR**0.68)))*((math.cos(30*math.pi/180)**0.15))-3.1)
+oswald_efficiency = (oswald_efficiency_30 - oswald_efficiency_0)*((alpha - 0)/(30 - 0)) + oswald_efficiency_0
+
+span_efficiency = 1/(1+(1/(AR*oswald_efficiency)))
+
+a = a0/(1+((57.3*a0)/(math.pi*span_efficiency*AR)))
+
+K = 1/(math.pi*oswald_efficiency*AR)
+
+print("The calculated value for the Oswald efficiency factor of the wing is", oswald_efficiency)
+print("The calculated value for the span efficiency factor of the wing is", span_efficiency)
+print("The calculated value for the 3D lift curve slope of the wing is", a)
+print("The calculated value for the K value of the wing is", K)
