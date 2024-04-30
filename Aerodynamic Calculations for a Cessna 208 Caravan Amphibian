@@ -315,6 +315,27 @@ print(sg_land)
 s_landing=sa_land+sf+sg_land
 print(s_landing)
 
+# fuel in each segment
+#takeoff
+time_ground_take = sg_take/(0.7*VLO)
+sa_take_cruise = 4304.4*UR.m # found this distance for our cruise only, by using the height as our cruise altitude instead of obstacle height
+time_tr_take = s_tr/(VLO*math.cos(theta))
+time_a_take = sa_take_cruise/VLO
+time_take = time_ground_take + time_a_take + time_tr_take
+fuel_take = (C*Pes)*(time_take)
+print(fuel_take)
+#steady flight
+time=3600*UR.sec
+fuel_steady=(time*C*Pes)
+print(fuel_steady)
+#landing
+sa_land_cruise = 5769.37*UR.m #found this distance for our cruise only
+time_a_land= sa_land_cruise/V_flare
+time_f_land = sf/V_flare
+time_land = time_a_land + time_f_land
+fuel_land = (C*Pes)*(time_land)
+print(fuel_land)
+
 #MATLAB script
 import pint
 import math
