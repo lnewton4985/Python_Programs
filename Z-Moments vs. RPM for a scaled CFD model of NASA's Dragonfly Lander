@@ -1,0 +1,119 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jul 18 12:18:14 2024
+
+@author: lnewt
+"""
+
+from matplotlib import pyplot as plt
+
+x=[4000,8000,12000,16000,18000] #RPM
+y0=[0,0,0,0,0]
+
+#R2
+
+#Rtot Cant
+y1=[0.01437916,0.059094382,0.131776028,0.267704746,0.340276413]
+#Rtot
+y2=[-0.099039743,-0.3894515,-0.864049198,-1.822812672,-2.220465127]
+#Total
+y3=[-0.13820193,-0.455067536,-1.192156517,-2.460238979,-2.459148682]
+#Body
+y4=[-0.053541348,-0.124710418,-0.459883346,-0.905131054,-0.578959967]
+
+#plt.plot(x,y1,color='g', linestyle='solid', label='Rotor With Cant')
+#plt.plot(x,y1,'go')
+plt.plot(x,y2,color='orange', linestyle='solid', label='Rotors')
+plt.scatter(x,y2,color='orange')
+plt.plot(x,y4,color='y',linestyle='solid', label='Lander')
+plt.scatter(x,y4,color='y')
+plt.plot(x,y3,color='b', linestyle='solid',label='Total')
+plt.scatter(x,y3,color='blue')
+plt.plot(x,y0,linestyle='dashed', color='k', linewidth=1,label='Zero Z-Moment')
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment vs. RPM (FPU Rotor) (CW+, CCW-)')
+plt.legend()
+plt.show()
+
+#R3
+
+#Rtot Cant
+y5=[-0.013030085,-0.055926551,-0.13009632,-0.227327782,-0.291899475]
+#Rtot
+y6=[0.09053198,0.371236047,0.845837076,1.495933539,1.903561991]
+#Total
+y7=[0.076956175,0.321345279,0.744908849,1.319165552,1.678981396]
+#Body
+y8=[-0.00054572,0.006035783,0.029168093,0.050559795,0.067318879]
+
+#plt.plot(x,y5,color='g', linestyle='solid', label='Rotor With Cant')
+#plt.plot(x,y5,'go')
+plt.plot(x,y6,color='orange', linestyle='solid', label='Rotors')
+plt.scatter(x,y6,color='orange')
+plt.plot(x,y8,color='y',linestyle='solid', label='Lander')
+plt.scatter(x,y8,color='y')
+plt.plot(x,y7,color='b', linestyle='solid',label='Total')
+plt.scatter(x,y7,color='blue')
+plt.plot(x,y0,linestyle='dashed', color='k', linewidth=1,label='Zero Z-Moment')
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment vs. RPM (APU Rotor) (CW+, CCW-)')
+plt.legend()
+plt.show()
+
+#R5
+
+#Rtot Cant
+y9=[0.017683603,0.054031684,0.149691812,0.269491023,0.363967]
+#Rtot
+y10=[0.123228412,0.374655697,1.025445485,1.812482292,2.387611299]
+#Total
+y11=[0.117290842,0.365489978,0.963433126,1.807571262,2.181355109]
+#Lander
+y12=[-0.023621173,-0.063197404,-0.211704171,-0.274402053,-0.57022319]
+
+#plt.plot(x,y9,color='g', linestyle='solid', label='Rotor With Cant')
+#plt.plot(x,y9,'go')
+plt.plot(x,y10,color='orange', linestyle='solid', label='Rotors')
+plt.scatter(x,y10,color='orange')
+plt.plot(x,y12,color='y',linestyle='solid', label='Lander')
+plt.scatter(x,y12,color='y')
+plt.plot(x,y11,color='b', linestyle='solid',label='Total')
+plt.scatter(x,y11,color='blue')
+plt.plot(x,y0,linestyle='dashed', color='k', linewidth=1,label='Zero Z-Moment')
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment vs. RPM (FPL Rotor) (CW+, CCW-)')
+plt.legend()
+plt.show()
+
+#R8
+
+#Rtot Cant
+y13=[0.002644004,0.01057124,0.008767338,-0.02865236,0.024151905]
+#Rtot
+y14=[-0.100333102,-0.38518482,-0.793555771,-1.692810334,-2.194578121]
+#Total
+y15=[-0.067728911,-0.275106489,-0.538868068,-1.217125544,-1.696372362]
+#Lander
+y16=[0.029960187,0.099507091,0.245920366,0.50433715,0.474053854]
+
+#plt.plot(x,y13,color='g', linestyle='solid', label='Rotor With Cant')
+#plt.plot(x,y13,'go')
+plt.plot(x,y14,color='orange', linestyle='solid', label='Rotors')
+plt.scatter(x,y14,color='orange')
+plt.plot(x,y16,color='y',linestyle='solid', label='Lander')
+plt.scatter(x,y16,color='y')
+plt.plot(x,y15,color='b', linestyle='solid',label='Total')
+plt.scatter(x,y15,color='blue')
+plt.plot(x,y0,linestyle='dashed', color='k', linewidth=1,label='Zero Z-Moment')
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment vs. RPM (APL Rotor) (CW+, CCW-)')
+plt.legend()
+plt.show()
