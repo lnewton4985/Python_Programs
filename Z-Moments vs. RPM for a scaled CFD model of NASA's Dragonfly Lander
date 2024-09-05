@@ -1,0 +1,447 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jul  2 23:26:00 2024
+
+@author: lnewt
+"""
+
+from matplotlib import pyplot as plt
+import statistics
+import numpy as np
+
+#Each y is a seperate trial
+#FSL
+y_0=[0,0,0,0,0,0,0,0,0,0]
+x1= [3710,5150,7000,8350,9820,11320] 
+y1=[5,6,13,18,24,33]
+y2=[4,6,12,19,25,32]
+y3=[5,7,13,19,23,32]
+y_data_FSL=[statistics.mean(k) for k in zip(y1,y2,y3)]
+
+plt.plot(x1,y_data_FSL, 'go', label='Mean FL Rotor')
+plt.xlabel('RPM')
+plt.ylabel('Weight (g)')
+plt.title('Weight (g) vs. RPM (FL Rotor)')
+plt.legend()
+plt.show()
+
+#FPL
+x2=[5150,7000,8350,9820,11320,12740]
+y4=[6,12,16,22,25,34]
+y5=[7,11,16,22,28,36]
+y6=[6,10,15,23,28,31]
+y_data_FPL = [statistics.mean(k) for k in zip(y4,y5,y6)]
+
+#plt.plot(x2,y4,'go', label='Trial1')
+#plt.plot(x2,y5,'c*',label='Trial2')
+#plt.plot(x2,y6,'ms',label='Trial 3')
+
+plt.plot(x2,y_data_FPL, 'go', label='Mean FPL Rotor')
+plt.xlabel('RPM')
+plt.ylabel('Weight (g)')
+plt.title('Weight (g) vs. RPM (FPL Rotor)')
+plt.legend()
+plt.show()
+
+#APL
+y7=[4,6,9,14,23,26]
+y8=[4,6,10,13,19,23]
+y9=[4,5,9,13,19,23]
+y_data_APL = [statistics.mean(k) for k in zip(y7,y8,y9)]
+
+#plt.plot(x2,y7,'go',label='Trial 1')
+#plt.plot(x2,y8,'c*',label='Trial 2')
+#plt.plot(x2,y9,'ms',label='Trial 3')
+
+plt.plot(x2,y_data_APL, 'go', label='Mean APL Rotor')
+
+plt.xlabel('RPM')
+plt.ylabel('Weight (g)')
+plt.title('Weight (g) vs. RPM (APL Rotor)')
+plt.legend()
+plt.show()
+
+#ASL
+y10=[6,9,14,17,22,29]
+y11=[5,8,11,17,20,26]
+y12=[5,7,11,17,23,27]
+y_data_ASL = [statistics.mean(k) for k in zip(y10,y11,y12)]
+
+#plt.plot(x2,y10,'go',label='Trial 1')
+#plt.plot(x2,y11,'c*',label='Trial 2')
+#plt.plot(x2,y12,'ms',label='Trial 3')
+
+plt.plot(x2,y_data_ASL, 'go', label='Mean ASL Rotor')
+
+plt.xlabel('RPM')
+plt.ylabel('Weight (g)')
+plt.title('Weight (g) vs. RPM (ASL Rotor)')
+plt.legend()
+plt.show()
+
+x3=[5150,7000,8350,9820,11320,12740,14100,15300,16060,17400]
+
+#FPL shell off
+y13=[7,15,20,27,37,49,60,70,82,90]
+y14=[7,13,20,27,37,43,54,65,85,90]
+y15=[7,14,20,28,34,45,54,65,82,92]
+y16=[6,13,21,27,34,45,55,70,78,89]
+y17=[7,12,19,30,36,43,56,66,78,95]
+y18=[8,12,18,27,35,44,55,65,78,90]
+y_data_FPL_off = [statistics.mean(k) for k in zip(y13,y14,y15,y16,y17,y18)]
+
+
+
+plt.plot(x3,y_data_FPL_off, linestyle='solid', label='Mean FPL (shell off) Rotor')
+
+plt.xlabel('RPM')
+plt.ylabel('Weight (g)')
+plt.title('Weight (g) vs. RPM (FPL (shell off) Rotor)')
+plt.legend()
+plt.show()
+
+#FPL shell on
+y19=[4,9,14,20,24,34,45,55,64,82]
+y20=[4,9,15,20,28,35,43,49,65,72]
+y21=[4,8,14,18,25,33,37,49,55,65]
+y22=[5,9,14,20,24,34,41,48,55,68]
+y23=[4,9,14,21,26,33,44,49,60,68]
+y24=[5,11,14,20,28,32,40,52,59,65]
+y_data_FPL_on = [statistics.mean(k) for k in zip(y19,y20,y21,y22,y23,y24)]
+
+
+plt.plot(x2,y_data_FPL, linestyle='solid', label='Mean FPL (old data) Rotor')
+plt.plot(x3,y_data_FPL_on, linestyle='solid', label='Mean FPL (new data) Rotor')
+
+plt.xlabel('RPM')
+plt.ylabel('Weight (g)')
+plt.title('Weight (g) vs. RPM (FPL (new data) & FPL (old data) Rotor)')
+plt.legend()
+plt.show()
+
+#FPL Shell off vs. Shell on
+plt.plot(x3,y_data_FPL_on, linestyle='solid', color = 'g', label='Mean FPL (shell on) Rotor')
+plt.plot(x3,y_data_FPL_off, linestyle='solid', color ='m', label='Mean FPL (shell off) Rotor')
+plt.xlabel('RPM')
+plt.ylabel('Weight (g)')
+plt.title('Weight (g) vs. RPM (FPL (shell on) & FPL (shell off) Rotor)')
+plt.legend()
+plt.show()
+
+#APL shell off
+y25=[8,12,18,27,37,47,55,64,75,87]
+y26=[7,13,18,26,36,48,57,65,74,87]
+y27=[8,13,18,26,35,45,58,64,76,90]
+y28=[8,12,19,26,38,48,56,66,77,89]
+y29=[7,12,18,26,37,45,57,66,75,90]
+y30=[8,13,19,27,34,44,55,68,71,86]
+y_data_APL_off = [statistics.mean(k) for k in zip(y25,y26,y27,y28,y29,y30)]
+
+plt.plot(x3,y_data_APL_off, linestyle='solid', label='Mean APL (shell off) Rotor')
+
+plt.plot(x3,y25, 'go',markersize=2)
+plt.plot(x3,y26,'go',markersize=2)
+plt.plot(x3,y27,'go',markersize=2)
+plt.plot(x3,y28,'go',markersize=2)
+plt.plot(x3,y29,'go',markersize=2)
+plt.plot(x3,y30,'go',markersize=2)
+
+plt.xlabel('RPM')
+plt.ylabel('Weight (g)')
+plt.title('Weight (g) vs. RPM (APL (shell off) Rotor)')
+plt.legend()
+plt.show()
+
+#APL shell on
+y31=[6,8,15,22,26,33,43,55,62,73]
+y32=[6,9,15,20,28,35,47,55,62,73]
+y33=[6,10,15,21,27,37,42,54,62,73]
+y34=[7,10,15,20,29,36,47,54,63,72]
+y35=[6,9,15,21,28,38,44,54,63,73]
+y36=[5,9,15,19,27,39,45,53,64,73]
+
+y_data_APL_on = [statistics.mean(k) for k in zip(y31,y32,y33,y34,y35,y36)]
+
+    
+plt.plot(x3,y_data_APL_on, linestyle='solid', color='g',label='Mean APL (shell on) Rotor')
+plt.plot(x3,y_data_APL_off, linestyle='solid', color='m',label='Mean APL (shell off) Rotor')
+plt.xlabel('RPM')
+plt.ylabel('Weight (g)')
+plt.title('Weight (g) vs. RPM (APL (shell on) & APL (shell off) Rotor)')
+plt.legend()
+plt.show()
+
+plt.plot(x3,y_data_APL_on, linestyle='solid', label='Mean APL (new data) Rotor')
+plt.plot(x2,y_data_APL, linestyle='solid', label='Mean APL (old data) Rotor')
+
+plt.xlabel('RPM')
+plt.ylabel('Weight (g)')
+plt.title('Weight (g) vs. RPM (APL (old data) & APL (new data) Rotor)')
+plt.legend()
+plt.show()
+
+#Z-MOMENT
+
+c=0.001183577
+
+
+FSL_old_mom=list(np.array(y_data_FSL)*c)
+FPL_old_mom=list(np.array(y_data_FPL)*c)
+APL_old_mom=list(np.array(y_data_APL)*c)
+ASL_old_mopm=list(np.array(y_data_ASL)*c)
+FPL_off_mom=list(np.array(y_data_FPL_off)*c)
+FPL_on_mom=list(np.array(y_data_FPL_on)*c)
+APL_off_mom=list(np.array(y_data_APL_off)*-c)
+APL_on_mom=list(np.array(y_data_APL_on)*-c)
+
+plt.plot(x3,FPL_off_mom, linestyle='solid', label='FPL Rotor (Shell off)')
+
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (FPL Rotor (Shell off))')
+plt.legend()
+plt.show()
+
+plt.plot(x3,FPL_on_mom, linestyle='solid', color='r', label='FPL Rotor (Shell on)')
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (FPL Rotor (Shell on))')
+plt.legend()
+plt.show()
+
+plt.plot(x3,APL_off_mom, linestyle='solid',color='g', label='APL Rotor (Shell off)')
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (APL Rotor (Shell off))')
+plt.legend()
+plt.show()
+
+plt.plot(x3,APL_on_mom, linestyle='solid', color= 'orange', label='APL Rotor (Shell on)')
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (APL Rotor (Shell on))')
+plt.legend()
+plt.show()
+
+#FPL shell off vs. on Z-moment
+
+plt.plot(x3,FPL_on_mom, linestyle='solid', color='g', label='FPL Rotor (Shell on)')
+plt.plot(x3,FPL_off_mom, linestyle='solid', color='m', label='FPL Rotor (Shell off)')
+
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (FPL (shell on) & FPL (shell off) Rotor)')
+plt.legend()
+plt.show()
+
+#APL shell off vs. on Z-moment
+
+plt.plot(x3,APL_on_mom, linestyle='solid', color= 'g', label='APL Rotor (Shell on)')
+plt.plot(x3,APL_off_mom, linestyle='solid',color='m', label='APL Rotor (Shell off)')
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (APL (shell on) & APL (shell off) Rotor)')
+plt.legend()
+plt.show()
+
+
+#Suction force APL
+y_APL_array_on = np.array(y_data_APL_on)
+y_APL_array_off = np.array(y_data_APL_off)
+suction_force_APL = []
+suction_force_APL = y_APL_array_on - y_APL_array_off
+suction_force_mom_APL = list(np.array(suction_force_APL)*c)
+plt.plot(x3, suction_force_mom_APL, label='Suction Force')
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (Suction Force APL Rotor)')
+plt.legend()
+plt.show()
+
+#Suction force vs. APL rotors
+plt.plot(x3,APL_off_mom, linestyle='solid',color='m', label='APL Rotor (Shell off)')
+plt.plot(x3,APL_on_mom, linestyle='solid', color= 'g', label='APL Rotor (Shell on)')
+y_APL_array_on = np.array(y_data_APL_on)
+y_APL_array_off = np.array(y_data_APL_off)
+suction_force_APL = []
+suction_force_APL = -y_APL_array_on + y_APL_array_off
+suction_force_mom_APL = list(np.array(suction_force_APL)*c)
+plt.plot(x3, suction_force_mom_APL, color='c',label='Body Suction')
+plt.plot(x3,y_0,linestyle='dashed', color='black',label='Zero Z-Moment',linewidth=1)
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (APL Rotor) (CW+, CCW-)')
+plt.legend()
+plt.show()
+
+#Suction Force FPL
+y_FPL_array_on = np.array(y_data_FPL_on)
+y_FPL_array_off = np.array(y_data_FPL_off)
+suction_force_FPL = []
+suction_force_FPL = -y_FPL_array_on + y_FPL_array_off
+suction_force_mom_FPL = list(np.array(suction_force_FPL)*c)
+plt.plot(x3, suction_force_mom_FPL, label='Suction Force')
+
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (Suction Force FPL Rotor)')
+plt.legend()
+plt.show()
+
+#Suction force vs. FPL rotors
+plt.plot(x3,FPL_off_mom, linestyle='solid',color='m', label='FPL Rotor (Shell off)')
+plt.plot(x3,FPL_on_mom, linestyle='solid', color= 'g', label='FPL Rotor (Shell on)')
+y_FPL_array_on = np.array(y_data_FPL_on)
+y_FPL_array_off = np.array(y_data_FPL_off)
+suction_force_FPL = []
+suction_force_FPL = y_FPL_array_on - y_FPL_array_off
+suction_force_mom_FPL = list(np.array(suction_force_FPL)*c)
+plt.plot(x3, suction_force_mom_FPL,color='c', label='Body Suction')
+plt.plot(x3,y_0,linestyle='dashed', color='black',label='Zero Z-Moment',linewidth=1)
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (FPL Rotor) (CW+, CCW-)')
+plt.legend()
+plt.show()
+
+#FPU shell off vs. on
+
+#Shell off
+y37=[4,8,11,17,23,30,38,46,55,70]
+y38=[4,8,11,17,25,32,43,49,56,68]
+y39=[3,7,10,17,24,34,38,53,59,67]
+y40=[5,8,12,17,24,31,40,51,59,68]
+y41=[3,6,11,17,24,32,40,48,55,69]
+y42=[3,8,11,16,23,32,39,49,53,68]
+
+y_data_FPU_off = [statistics.mean(k) for k in zip(y37,y38,y39,y40,y41,y42)]
+
+FPU_off_mom=list(np.array(y_data_FPU_off)*-c)
+
+#Shell on
+y43=[5,7,14,18,23,27,32,53,62,70]
+y44=[5,8,12,18,23,27,43,55,63,72]
+y45=[6,10,13,22,27,33,43,50,63,75]
+y46=[3,6,13,18,24,37,44,49,62,75]
+y47=[4,7,14,18,24,32,40,50,61,74]
+y48=[4,9,14,21,26,32,46,55,65,81]
+
+y_data_FPU_on = [statistics.mean(k) for k in zip(y43,y44,y45,y46,y47,y48)]
+
+FPU_on_mom=list(np.array(y_data_FPU_on)*-c)
+
+plt.plot(x3, FPU_off_mom, linestyle='solid', color='m', label='FPU Rotor (Shell Off)')
+plt.plot(x3, FPU_on_mom, linestyle='solid', color='g', label='FPU Rotor (Shell On)')
+
+y_FPU_array_on = np.array(y_data_FPU_on)
+y_FPU_array_off = np.array(y_data_FPU_off)
+suction_force_FPU = []
+suction_force_FPU = -y_FPU_array_on + y_FPU_array_off
+suction_force_mom_FPU = list(np.array(suction_force_FPU)*c)
+plt.plot(x3, suction_force_mom_FPU,color='c', label='Body Suction')
+
+
+plt.plot(x3,y_0,linestyle='dashed', color='black',linewidth=1,label='Zero Z-Moment')
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (FPU Rotor) (CW+, CCW-)')
+plt.legend()
+plt.show()
+
+#APU Shell on vs. Shell off
+
+#Shell off
+y49=[5,7,10,14,20,27,34,40,48,60]
+y50=[4,7,10,16,21,24,32,40,50,60]
+y51=[2,6,10,16,22,29,34,38,50,58]
+y52=[4,7,11,15,20,26,36,41,50,59]
+y53=[5,7,10,15,21,28,34,44,47,60]
+y54=[2,6,8,14,21,27,33,41,52,58]
+
+y_data_APU_off = [statistics.mean(k) for k in zip(y49,y50,y51,y52,y53,y54)]
+
+APU_off_mom=list(np.array(y_data_APU_off)*c)
+
+#Shell on
+y55=[2,7,16,22,35,40,52,64,78,88]
+y56=[3,10,17,25,33,47,58,67,79,88]
+y57=[5,11,16,25,33,45,58,65,78,87]
+y58=[5,10,18,26,34,42,52,67,79,90]
+y59=[5,9,16,24,33,43,58,71,79,90]
+y60=[7,11,17,24,31,42,51,60,75,85]
+
+y_data_APU_on = [statistics.mean(k) for k in zip(y55,y56,y57,y58,y59,y60)]
+
+APU_on_mom=list(np.array(y_data_APU_on)*c)
+
+plt.plot(x3, APU_off_mom, linestyle='solid', color='m', label='APU Rotor (Shell Off)')
+plt.plot(x3, APU_on_mom, linestyle='solid', color='g', label='APU Rotor (Shell On)')
+
+y_APU_array_on = np.array(y_data_APU_on)
+y_APU_array_off = np.array(y_data_APU_off)
+suction_force_APU = []
+suction_force_APU = y_APU_array_on - y_APU_array_off
+suction_force_mom_APU = list(np.array(suction_force_APU)*c)
+plt.plot(x3, suction_force_mom_APU,color='c', label='Body Suction')
+
+
+
+plt.plot(x3,y_0,linestyle='dashed', color='black',linewidth=1,label='Zero Z-Moment')
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (APU Rotor)')
+plt.legend()
+plt.show()
+
+#APU Shell off vs. on Trial 2
+#Shell off
+y61=[3,5,10,16,22,31,40,48,56,67]
+y62=[4,6,12,19,26,30,42,49,59,68]
+y63=[4,7,9,16,23,31,42,52,58,67]
+y64=[3,5,8,15,25,32,39,48,57,68]
+y65=[4,6,9,16,23,33,42,47,54,67]
+y66=[6,7,11,16,25,33,41,51,58,67]
+y_data_APU_off_2 = [statistics.mean(k) for k in zip(y61,y62,y63,y64,y64,y66)]
+
+APU_off_mom_2=list(np.array(y_data_APU_off_2)*c)
+
+#APU Shell off vs. on Trial 2
+#Shell on
+y67=[4,7,12,20,30,39,56,61,72,88]
+y68=[4,7,15,21,30,40,53,60,72,87]
+y69=[3,8,14,20,32,40,52,63,73,85]
+y70=[5,11,16,22,31,41,50,60,68,85]
+y71=[3,8,15,23,31,39,53,62,74,82]
+y72=[3,8,13,20,30,41,49,59,70,83]
+
+y_data_APU_on_2 = [statistics.mean(k) for k in zip(y67,y68,y69,y70,y71,y72)]
+
+APU_on_mom_2=list(np.array(y_data_APU_on_2)*c)
+
+plt.plot(x3, APU_off_mom_2, linestyle='solid', color='m', label='APU Rotor (Shell Off)')
+plt.plot(x3, APU_on_mom_2, linestyle='solid', color='g', label='APU Rotor (Shell On)')
+
+y_APU_array_on_2 = np.array(y_data_APU_on_2)
+y_APU_array_off_2 = np.array(y_data_APU_off_2)
+suction_force_APU_2 = []
+suction_force_APU_2 = y_APU_array_on_2 - y_APU_array_off_2
+suction_force_mom_APU_2 = list(np.array(suction_force_APU_2)*c)
+plt.plot(x3, suction_force_mom_APU_2,color='c', label='Body Suction')
+
+
+plt.plot(x3,y_0,linestyle='dashed', color='black',linewidth=1,label='Zero Z-Moment')
+
+plt.xlabel('RPM')
+plt.ylabel('Z-Moment (N-m)')
+plt.title('Z-Moment (N-m) vs. RPM (APU Rotor) (CW+, CCW-)')
+plt.legend()
+plt.show()
